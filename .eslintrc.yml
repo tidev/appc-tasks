@@ -10,6 +10,8 @@ parserOptions:
   ecmaFeatures:
     modules: true
 rules:
+  no-console:
+    - off
   indent:
     - error
     - tab
