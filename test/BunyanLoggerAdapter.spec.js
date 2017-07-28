@@ -2,15 +2,15 @@ import { BunyanLoggerAdapter } from '../lib/logger';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-describe('BunyanLoggerAdapter', () => {
-	let bunyanApi = {
-		trace: () => {},
-		debug: () => {},
-		info: () => {},
-		warn: () => {},
-		error: () => {}
-	};
+let bunyanApi = {
+	trace: () => {},
+	debug: () => {},
+	info: () => {},
+	warn: () => {},
+	error: () => {}
+};
 
+describe('BunyanLoggerAdapter', () => {
 	describe('constructor', () => {
 		it('should throw error if logger does not conform to bunyan log API', () => {
 			let exceptionMessage = 'Invalid logger given, only logger instances that support the Bunyan log methods API are supported.';
