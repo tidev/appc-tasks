@@ -11,7 +11,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel lib --out-dir dist",
-    "lint": "eslint ./lib ./test",
+    "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test nyc mocha"
   },
   "keywords": [
@@ -21,14 +21,35 @@
     "project"
   ],
   "dependencies": {
-    "file-state-monitor": "^1.0.0"
+    "file-state-monitor": "^1.0.0",
+    "fs-extra": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
+    "babel-plugin-istanbul": "^4.1.4",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.24.1",
     "chai": "^4.1.0",
+    "chai-as-promised": "^7.1.1",
+    "cross-env": "^5.0.1",
     "eslint": "^4.3.0",
     "eslint-plugin-mocha": "^4.11.0",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "mock-fs": "^4.4.1",
+    "nyc": "^11.0.3",
+    "sinon": "^2.4.1",
+    "std-mocks": "^1.0.1"
+  },
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "sourceMap": false,
+    "instrument": false
   }
 }
