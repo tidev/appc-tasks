@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { BaseTask, BaseFileTask } from '../lib';
 import fs from 'fs';
 import mockFs from 'mock-fs';
+import path from 'path';
 
 let noopBunyanLogger = {
 	trace: () => {},
@@ -60,7 +61,7 @@ describe('BaseFileTask', () => {
 
 				}
 			});
-			let inputFiles = ['input/file1.txt'];
+			let inputFiles = [path.join('input', 'file1.txt')];
 			task = new TestFileTask({
 				inputFiles: inputFiles,
 				outputDirectory: 'outputs',
@@ -75,14 +76,17 @@ describe('BaseFileTask', () => {
 
 	describe('properties', () => {
 		it('should get and set array of input files', () => {
-			let inputFiles = ['input/file1.txt', 'input/file2.txt'];
+			let inputFiles = [
+				path.join('input', 'file1.txt'),
+				path.join('input', 'file12.txt')
+			];
 			task.inputFiles = inputFiles;
 			expect(task._inputFiles).to.be.deep.equal(inputFiles);
 			expect(task.inputFiles).to.be.deep.equal(inputFiles);
 		});
 
 		it('should get array of output files', () => {
-			let outputFiles = ['output/generated.data'];
+			let outputFiles = [path.join('output', 'generated.data')];
 			task._outputFiles = outputFiles;
 			expect(task.outputFiles).to.be.deep.equal(outputFiles);
 		});
@@ -94,7 +98,7 @@ describe('BaseFileTask', () => {
 		});
 
 		it('should throw setting output directory after state is "running" or higher', () => {
-			let outputDirectory = 'output/subdir';
+			let outputDirectory = path.join('output', 'subdir');
 			task._state = BaseTask.TASK_STATE_RUNNING;
 			expect(() => {
 				task.outputDirectory = outputDirectory;
@@ -102,7 +106,7 @@ describe('BaseFileTask', () => {
 		});
 
 		it('should set and create output directory if state is "created"', () => {
-			let outputDirectory = 'output/subdir';
+			let outputDirectory = path.join('output', 'subdir');
 			expect(fs.existsSync(outputDirectory)).to.be.false;
 			expect(task.state).to.be.equal(BaseTask.TASK_STATE_CREATED);
 			task.outputDirectory = outputDirectory;
@@ -113,14 +117,14 @@ describe('BaseFileTask', () => {
 
 	describe('addInputFile', () => {
 		it('should throw error if file does not exist', () => {
-			let inputFile = 'inputs/foo.txt';
+			let inputFile = path.join('inputs', 'foo.txt');
 			expect(() => {
 				task.addInputFile(inputFile);
 			}).to.throw(Error, `Input file ${inputFile} does not exist.`);
 		});
 
 		it('should add file to input files array', () => {
-			let inputFile = 'input/file1.txt';
+			let inputFile = path.join('input', 'file1.txt');
 			task.addInputFile(inputFile);
 			expect(task.inputFiles).to.include(inputFile);
 		});
@@ -136,9 +140,9 @@ describe('BaseFileTask', () => {
 		it('should recursively add all files', () => {
 			let inputDirectory = 'input';
 			let expectedInputFiles = [
-				'input/file1.txt',
-				'input/file2.txt',
-				'input/sub/file3.txt'
+				path.join('input', 'file1.txt'),
+				path.join('input', 'file2.txt'),
+				path.join('input', 'sub', 'file3.txt')
 			];
 			task.addInputDirectory(inputDirectory);
 			expect(task.inputFiles).to.be.deep.equal(expectedInputFiles);
@@ -147,14 +151,14 @@ describe('BaseFileTask', () => {
 
 	describe('addOutputFile', () => {
 		it('should throw error if file does not exist', () => {
-			let outputFile = 'output/foo.txt';
+			let outputFile = path.join('output', 'foo.txt');
 			expect(() => {
 				task.addOutputFile(outputFile);
 			}).to.throw(Error, `Output file ${outputFile} does not exist.`);
 		});
 
 		it('should add file to output files array', () => {
-			let outputFile = 'output/generated.data';
+			let outputFile = path.join('output', 'generated.data');
 			task.addOutputFile(outputFile);
 			expect(task.outputFiles).to.include(outputFile);
 		});
@@ -170,8 +174,8 @@ describe('BaseFileTask', () => {
 			task.outputDirectory = 'output';
 			task.afterTaskAction();
 			let expectedOutputFiles = [
-				'output/generated.data',
-				'output/sub/other.data'
+				path.join('output', 'generated.data'),
+				path.join('output', 'sub', 'other.data')
 			];
 			expect(task.outputFiles).to.be.deep.equal(expectedOutputFiles);
 		});

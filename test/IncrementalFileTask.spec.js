@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { FileMonitor } from 'file-state-monitor';
 import fs from 'fs';
 import mockFs from 'mock-fs';
+import path from 'path';
 import sinon from 'sinon';
 
 chai.use(chaiAsPromised);
@@ -75,11 +76,11 @@ describe('IncrementalFileTask', () => {
 		});
 
 		it('should set and create incremental directory', () => {
-			let incrementalDirectory = 'incremental/sub';
+			let incrementalDirectory = path.join('incremental', 'sub');
 			expect(fs.existsSync(incrementalDirectory)).to.be.false;
 			task = new TestTask({
 				name: 'testTask',
-				incrementalDirectory: 'incremental/sub',
+				incrementalDirectory: incrementalDirectory,
 				logger: noopBunyanLogger
 			});
 			expect(task.incrementalDirectory).to.be.equal(incrementalDirectory);
@@ -137,7 +138,7 @@ describe('IncrementalFileTask', () => {
 		});
 
 		it('should delete incremental directory if task run failed', () => {
-			let dummyIncrementalFile = 'incremental/dummy.txt';
+			let dummyIncrementalFile = path.join('incremental', 'dummy.txt');
 			let fullTaskRunStub = sandbox.stub(task, 'doFullTaskRun');
 			fullTaskRunStub.returns(Promise.reject('Failed'));
 			expect(fs.existsSync(dummyIncrementalFile)).to.be.true;
