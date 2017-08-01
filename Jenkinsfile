@@ -1,4 +1,5 @@
 #! groovy
+library 'pipeline-library'
 
 def publishableBranches = ['master']
 
