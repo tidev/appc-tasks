@@ -7,7 +7,7 @@ node('node && npm && npm-publish && nsp && retirejs') {
   stage('Checkout') {
     checkout scm
     packageVersion = jsonParse(readFile('package.json'))['version']
-    currentBuild.displayName = '#${packageVersion}-${currentBuild.number}'
+    currentBuild.displayName = "#${packageVersion}-${currentBuild.number}"
   }
   stage('Dependencies') {
     sh 'npm install'
@@ -21,9 +21,9 @@ node('node && npm && npm-publish && nsp && retirejs') {
   }
   stage('Publish') {
     if(publishableBranches.contains(env.BRANCH_NAME)) {
-      echo 'Publishing ${env.BRANCH_NAME} branch as version ${packageVersion}.'
+      echo "Publishing ${env.BRANCH_NAME} branch as version ${packageVersion}."
       sh 'npm publish'
-      pushGitTag(name: 'v${packageVersion}', force: true)
+      pushGitTag(name: "v${packageVersion}", force: true)
     }
   }
 }
