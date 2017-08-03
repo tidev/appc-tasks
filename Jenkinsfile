@@ -9,14 +9,14 @@ node('node && npm && npm-publish && nsp && retirejs') {
     packageVersion = jsonParse(readFile('package.json'))['version']
     currentBuild.displayName = "#${packageVersion}-${currentBuild.number}"
   }
-  stage('Dependencies') {
+  stage('Install dependencies') {
     sh 'npm install'
   }
   stage('Security') {
-    sh 'retire'
+    sh 'retire -p'
     sh 'nsp check'
   }
-  stage('Test') {
+  stage('Unit tests') {
     sh 'npm test'
   }
   stage('Publish') {
