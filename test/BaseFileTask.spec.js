@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { BaseTask, BaseFileTask } from '../lib';
-import fs from 'fs';
+import { BaseFileTask } from '../lib';
 import mockFs from 'mock-fs';
 import path from 'path';
 
@@ -49,11 +48,10 @@ describe('BaseFileTask', () => {
 	});
 
 	describe('constructor', () => {
-		it('should set input and output files, as well as output directory', () => {
+		it('should initialize properties', () => {
 			expect(task._name).to.be.equal('testTask');
-			expect(task._inputFiles).to.be.empty;
-			expect(task._outputFiles).to.be.empty;
-			expect(task._outputDirectory).to.be.null;
+			expect(task._inputFiles).to.be.a('set').that.is.empty;
+			expect(task._outputFiles).to.be.a('set').that.is.empty;
 
 			mockFs({
 				'file1.txt': '',
@@ -63,55 +61,36 @@ describe('BaseFileTask', () => {
 			});
 			let inputFiles = [path.join('input', 'file1.txt')];
 			task = new TestFileTask({
-				inputFiles: inputFiles,
-				outputDirectory: 'outputs',
+				inputFiles: inputFiles
 			});
-			expect(task._inputFiles).to.have.lengthOf(1);
-			expect(task._inputFiles).to.be.deep.equal(inputFiles);
-			expect(task._outputFiles).to.be.empty;
-			expect(task._outputDirectory).to.be.equal('outputs');
+			expect(task._inputFiles.size).to.be.equal(1);
+			expect(task._inputFiles).to.be.a('set').that.has.all.keys(inputFiles);
+			expect(task._outputFiles).to.be.a('set').that.is.empty;
+			expect(task._registeredOutputPaths).to.be.a('set').that.is.empty;
 			mockFs.restore();
+
+			task = new TestFileTask();
+			expect(task._inputFiles).to.be.a('set').that.is.empty;
+			expect(task._outputFiles).to.be.a('set').that.is.empty;
+			expect(task._registeredOutputPaths).to.be.a('set').that.is.empty;
 		});
 	});
 
 	describe('properties', () => {
-		it('should get and set array of input files', () => {
+		it('should get and set input files', () => {
 			let inputFiles = [
 				path.join('input', 'file1.txt'),
 				path.join('input', 'file12.txt')
 			];
 			task.inputFiles = inputFiles;
-			expect(task._inputFiles).to.be.deep.equal(inputFiles);
-			expect(task.inputFiles).to.be.deep.equal(inputFiles);
+			expect(task._inputFiles).to.be.a('set').that.has.all.keys(inputFiles);
+			expect(task.inputFiles).to.be.a('set').that.has.all.keys(inputFiles);
 		});
 
-		it('should get array of output files', () => {
+		it('should get output files', () => {
 			let outputFiles = [path.join('output', 'generated.data')];
-			task._outputFiles = outputFiles;
-			expect(task.outputFiles).to.be.deep.equal(outputFiles);
-		});
-
-		it('should get output directory', () => {
-			let outputDirectory = 'output';
-			task._outputDirectory = outputDirectory;
-			expect(task.outputDirectory).to.be.equal(outputDirectory);
-		});
-
-		it('should throw setting output directory after state is "running" or higher', () => {
-			let outputDirectory = path.join('output', 'subdir');
-			task._state = BaseTask.TASK_STATE_RUNNING;
-			expect(() => {
-				task.outputDirectory = outputDirectory;
-			}).to.throw(Error, 'Cannot change a task\'s output directory after it was started.');
-		});
-
-		it('should set and create output directory if state is "created"', () => {
-			let outputDirectory = path.join('output', 'subdir');
-			expect(fs.existsSync(outputDirectory)).to.be.false;
-			expect(task.state).to.be.equal(BaseTask.TASK_STATE_CREATED);
-			task.outputDirectory = outputDirectory;
-			expect(task.outputDirectory).to.be.equal(outputDirectory);
-			expect(fs.existsSync(outputDirectory)).to.be.true;
+			task._outputFiles = new Set(outputFiles);
+			expect(task.outputFiles).to.be.a('set').that.has.all.keys(outputFiles);
 		});
 	});
 
@@ -123,9 +102,19 @@ describe('BaseFileTask', () => {
 			}).to.throw(Error, `Input file ${inputFile} does not exist.`);
 		});
 
-		it('should add file to input files array', () => {
+		it('should add file to input files set', () => {
 			let inputFile = path.join('input', 'file1.txt');
 			task.addInputFile(inputFile);
+			expect(task.inputFiles).to.include(inputFile);
+		});
+
+		it('should not add the same file twice to the set', () => {
+			let inputFile = path.join('input', 'file1.txt');
+			task.addInputFile(inputFile);
+			expect(task.inputFiles.size).to.be.equal(1);
+			expect(task.inputFiles).to.include(inputFile);
+			task.addInputFile(inputFile);
+			expect(task.inputFiles.size).to.be.equal(1);
 			expect(task.inputFiles).to.include(inputFile);
 		});
 	});
@@ -145,7 +134,8 @@ describe('BaseFileTask', () => {
 				path.join('input', 'sub', 'file3.txt')
 			];
 			task.addInputDirectory(inputDirectory);
-			expect(task.inputFiles).to.be.deep.equal(expectedInputFiles);
+			expect(task.inputFiles.size).to.be.equal(3);
+			expect(task.inputFiles).to.be.a('set').that.has.all.keys(expectedInputFiles);
 		});
 	});
 
@@ -160,24 +150,71 @@ describe('BaseFileTask', () => {
 		it('should add file to output files array', () => {
 			let outputFile = path.join('output', 'generated.data');
 			task.addOutputFile(outputFile);
+			expect(task.outputFiles.size).to.be.equal(1);
+			expect(task.outputFiles).be.a('set').that.includes(outputFile);
+		});
+
+		it('should not add the same file twice to the set', () => {
+			let outputFile = path.join('output', 'generated.data');
+			task.addOutputFile(outputFile);
+			expect(task.outputFiles.size).to.be.equal(1);
+			expect(task.outputFiles).to.include(outputFile);
+			task.addOutputFile(outputFile);
+			expect(task.outputFiles.size).to.be.equal(1);
 			expect(task.outputFiles).to.include(outputFile);
 		});
 	});
 
+	describe('addOutputDirectory', () => {
+		it('should silently fail if directory does not exist', () => {
+			let outputDirectory = '_output';
+			task.addOutputDirectory(outputDirectory);
+			expect(task.outputFiles).to.be.empty;
+		});
+
+		it('should recursively add all files', () => {
+			let outputDirectory = 'output';
+			let expectedOutputFiles = [
+				path.join('output', 'generated.data'),
+				path.join('output', 'sub', 'other.data')
+			];
+			task.addOutputDirectory(outputDirectory);
+			expect(task.outputFiles.size).to.be.equal(2);
+			expect(task.outputFiles).to.be.a('set').that.has.all.keys(expectedOutputFiles);
+		});
+	});
+
+	describe('registerOutputPath', () => {
+		it('should add path to the set of registered output paths', () => {
+			let outputPath = 'output';
+			task.registerOutputPath(outputPath);
+			expect(task._registeredOutputPaths.size).to.be.equal(1);
+			expect(task._registeredOutputPaths).to.be.a('set').that.includes(outputPath);
+		});
+	});
+
 	describe('afterTaskAction', () => {
-		it('should not add files of no output directory set', () => {
+		it('should not add files of no output paths registered', () => {
 			task.afterTaskAction();
 			expect(task.outputFiles).to.be.empty;
 		});
 
-		it('should add files if output directory is set', () => {
-			task.outputDirectory = 'output';
+		it('should add files if output paths registered', () => {
+			task.registerOutputPath('output');
 			task.afterTaskAction();
 			let expectedOutputFiles = [
 				path.join('output', 'generated.data'),
 				path.join('output', 'sub', 'other.data')
 			];
-			expect(task.outputFiles).to.be.deep.equal(expectedOutputFiles);
+			expect(task.outputFiles.size).to.be.equal(2);
+			expect(task.outputFiles).to.be.a('set').that.has.all.keys(expectedOutputFiles);
+
+			task = new TestFileTask();
+			let outputFile = path.join('output', 'generated.data');
+			task.registerOutputPath(outputFile);
+			task.afterTaskAction();
+			expect(task.outputFiles.size).to.be.equal(1);
+			expect(task.outputFiles).to.be.a('set').that.includes(outputFile);
 		});
 	});
 });
