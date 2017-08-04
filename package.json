@@ -11,6 +11,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel lib --out-dir dist",
+    "docs": "docma -c docma.config.json",
     "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test nyc mocha",
     "coveralls": "cross-env NODE_ENVE=test nyc report --reporter=text-lcov | coveralls",
@@ -36,8 +37,10 @@
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^5.0.1",
+    "docma": "^1.5.1",
     "eslint": "^4.3.0",
     "eslint-plugin-mocha": "^4.11.0",
+    "jsdoc-babel": "^0.3.0",
     "mocha": "^3.4.2",
     "mock-fs": "^4.4.1",
     "nyc": "^11.0.3",
