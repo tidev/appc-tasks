@@ -13,7 +13,7 @@ node('node && npm && npm-publish && nsp && retirejs') {
     sh 'npm install'
   }
   stage('Security') {
-    sh 'retire -p'
+    sh 'retire -p -n'
     sh 'nsp check'
   }
   stage('Unit tests') {
