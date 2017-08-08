@@ -3,6 +3,7 @@ import ChangeManager from '../lib/incremental/ChangeManager';
 import { FileMonitor } from 'file-state-monitor';
 import fs from 'fs';
 import mock from 'mock-fs';
+import path from 'path';
 import sinon from 'sinon';
 
 let changeManager = null;
@@ -42,7 +43,7 @@ describe('ChangeManager', () => {
 
 	describe('load', () => {
 		it('should not load state for non-existing files', () => {
-			let loaded = changeManager.load('/does/not/exist');
+			let loaded = changeManager.load('_states');
 			expect(loaded).to.be.false;
 		});
 
@@ -61,8 +62,8 @@ describe('ChangeManager', () => {
 			let writeStub = sinon.stub(FileMonitor.prototype, 'write');
 			changeManager.write('states');
 			expect(writeStub.callCount).to.be.equal(2);
-			expect(writeStub.firstCall.calledWith('states/inputs.state')).to.be.true;
-			expect(writeStub.secondCall.calledWith('states/outputs.state')).to.be.true;
+			expect(writeStub.firstCall.calledWith(path.join('states', 'inputs.state'))).to.be.true;
+			expect(writeStub.secondCall.calledWith(path.join('states', 'outputs.state'))).to.be.true;
 			writeStub.restore();
 		});
 	});

@@ -1,19 +1,22 @@
 {
   "name": "appc-tasks",
   "version": "1.0.0",
-  "description": "Basic task interface used throughout the Titanium build pipeline",
+  "description": "Base implementations for any kind of task in NodeJS",
   "author": "Axway Appcelerator",
   "repository": "appcelerator/appc-tasks",
   "license": "Apache-2.0",
   "engines": {
     "node": ">= 4.0.0"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "babel lib --out-dir dist",
+    "docs": "docma -c docma.config.json",
     "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test nyc mocha",
-    "coveralls": "cross-env NODE_ENVE=test nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "cross-env NODE_ENVE=test nyc report --reporter=text-lcov | coveralls",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint && npm run test"
   },
   "keywords": [
     "task",
@@ -34,8 +37,10 @@
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^5.0.1",
+    "docma": "^1.5.1",
     "eslint": "^4.3.0",
     "eslint-plugin-mocha": "^4.11.0",
+    "jsdoc-babel": "^0.3.0",
     "mocha": "^3.4.2",
     "mock-fs": "^4.4.1",
     "nyc": "^11.0.3",

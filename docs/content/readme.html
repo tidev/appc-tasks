@@ -1,0 +1,176 @@
+
+<html><head></head><body><h1 id="appc-tasks">appc-tasks</h1>
+<hr />
+<p><a href="https://travis-ci.org/appcelerator/appc-tasks"><img src="https://travis-ci.org/appcelerator/appc-tasks.svg?branch=master" alt="Travis Build Status"></a>
+<a href="https://ci.appveyor.com/project/appcelerator/appc-tasks"><img src="https://ci.appveyor.com/api/projects/status/edxjipwjl9qxtfc9?svg=true" alt="Appveyor Build status"></a>
+<a href="https://coveralls.io/github/appcelerator/appc-tasks?branch=master"><img src="https://coveralls.io/repos/github/appcelerator/appc-tasks/badge.svg?branch=master" alt="Coverage Status"></a>
+<a href="https://david-dm.org/appcelerator/appc-tasks"><img src="https://david-dm.org/appcelerator/appc-tasks.svg" alt="Dependencies"></a></p>
+<blockquote>
+<p>Base implementations for any kind of task in NodeJS</p>
+</blockquote>
+<h2 id="introduction">Introduction</h2>
+<p>This module provides base implementations that can be used to create your own tasks. A task in this context represents some atomic piece of work. It is used within the Titanium SDK and Hyperloop build pipelines but is designed to be usable in any other project as well.</p>
+<p>A full API documentation can be found at <a href="">http://appcelerator.github.io/appc-tasks/?api</a></p>
+<h2 id="getting-started">Getting started</h2>
+<p>Install via npm</p>
+<pre><code class="lang-bash">npm i appc-tasks -S
+</code></pre>
+<p>and create your own tasks using the provided base implementation</p>
+<pre><code class="lang-javascript">import { BaseTask } from 'appc-tasks';
+
+class MyTask extends BaseTask {
+  runTaskAction() {
+    // Implement task logic here
+  }
+}
+
+let task = new MyTask({name: 'myTask'});
+task.run().then(() =&gt; {
+  console.log('Task completed');
+}).catch(err =&gt; {
+  console.log(`Task failed with error: ${err}`);
+});
+</code></pre>
+<h3 id="the-base-task">The base task</h3>
+<p>All tasks extend from the <code>BaseTask</code> class which defines the interface how tasks are being run. New tasks that extend from the <code>BaseTask</code> need to override <code>runTaskAction</code> and define their task action there. To  customize the behavior of a task, you can also implement the <code>beforeTaskAction</code> and <code>afterTaskAction</code> methods which will automatically be called by the task's <code>run</code> method. Here you can do any pre- or post-processing that might be required for every instance of that specific task. In addition a task instance can be assigned a <code>preTaskRun</code> and <code>postTaskRun</code> function, which is intended to further customize a single instance of your task.</p>
+<pre><code class="lang-javascript">import { BaseTask } from 'appc-tasks';
+
+class CustomTask extends BaseTask {
+  beforeTaskAction() {
+    this.logger.debug('beforeTaskAction');
+  }
+
+  runTaskAction() {
+    this.logger.debug('runTaskAction');
+  }
+
+  afterTaskAction() {
+    this.logger.debug('afterTaskAction');
+  }
+}
+
+let task = new CustomTask({
+  name: 'customTask';
+});
+taskInstance.preTaskRun = () =&gt; {
+  task.logger.debug('preTaskRun');
+}
+taskInstance.postTaskRun = () =&gt; {
+  task.logger.info('postTaskRun');
+}
+taskInstance.run();
+// log output:
+// customTask: preTaskRun
+// customTask: beforeTaskAction
+// customTask: runTaskAction
+// customTask: afterTaskAction
+// customTask: postTaskRun
+</code></pre>
+<p>All of the above methods are executed in a <code>.then</code> chain, allowing you to perform async operations by returning a <code>Promise</code>.</p>
+<p>The base constructor can receive two options, a required <code>name</code> and and an optional <code>logger</code>. If you don't provide a logger, a default logger using <code>console.log</code> will be created. In the event that you want to provide your own logger, it has to be compatible to bunyan's <a href="https://github.com/trentm/node-bunyan#log-method-api">log method API</a>. A task will wrap the passed logger in an adapter, which will prefix every log message with the task name for better readability throughout all your tasks log messages.</p>
+<blockquote>
+<p>✅ Always assign a unique name to a task, whereby it can be properly identified.</p>
+</blockquote>
+<h3 id="file-based-tasks">File based tasks</h3>
+<p>The <code>BaseFileTask</code> extends the <code>BaseTask</code> with the concept of input and output files. Tasks that implement this interface can use that to describe which input files they require and which output files they will produce.</p>
+<pre><code class="lang-javascript">import { BaseFileTask } from 'appc-tasks';
+
+class FileTask extends BaseFileTask {
+
+  constructor(taskInfo) {
+    super(taskInfo);
+
+    this._sourceDirectory = null;
+    this._outputDirectory = null;
+  }
+
+  get sourceDirectory() {
+    return this._sourceDirectory;
+  }
+
+  set sourceDirectory(sourceDirectory) {
+    this._sourceDirectory = sourceDirectory;
+    this.addInputDirectory(this.sourceDirectory);
+  }
+
+  get outputDirectory() {
+    return this._outputDirectory;
+  }
+
+  set outputDirectory(outputPath) {
+    this._outputDirectory = outputPath;
+    this.registerOutputPath(this.outputDirectory);
+  }
+
+  runTaskAction() {
+    // this.inputFiles contains every file under the source directory
+    for (let inputFile of this.inputFiles) {
+      // Do your stuff, e.g. process inputFiles and write them to outputDirectory
+    }
+  }
+}
+
+let task = new FileTask({
+  name: 'fileTask'
+});
+task.sourceDirectory = '/path/to/some/sources';
+task.outputDirectory = '/path/to/output';
+task.run();
+</code></pre>
+<p>In the above example, adding of input files is masked behind setting a property for a cleaner API. You can also pass <code>inputFiles</code> directly via a the constructor option of the same name if you know your set of input files beforehand, or manually call the <code>addInputFile</code> and <code>addInputDirectory</code> methods.</p>
+<p>Similar to the input files, you can also define output files and directories. Do so by calling <code>registerOutputPath</code>, which will register the path so the task knows where to search for generated output files. The <code>BaseFileTask.afterTaskAction</code> implementation will recursively scan your registered output paths and add all found files to the <code>outputFiles</code> property after the task finished its <code>runTaskAction</code>.</p>
+<blockquote>
+<p>⚠️ Do not call <code>addOutputFile</code> or <code>addOutputDirectory</code> yourself, the <code>afterTaskAction</code> will do this for you using the registered output paths.</p>
+<p>✅ Handle the adding of input files and registration of output paths behind a property setters for a clean API in your task. This also allows you to easily access the paths using fitting property names.</p>
+</blockquote>
+<h3 id="incremental-file-tasks">Incremental file tasks</h3>
+<p>The <code>IncrementalFileTask</code> further extends the <code>BaseFileTask</code> with the ability to run full and incremental task actions, depending on wether input or output files changed. There are a few slight changes in the implementation when creating a custom incremental task.</p>
+<pre><code class="lang-javascript">import { IncrementalFileTask } from 'appc-tasks';
+
+class MySmartTask extends IncrementalFileTask {
+  get incrementalOutputs() {
+    return [this.outputDirectory];
+  }
+
+  get outputDirectory() {
+    return this._outputDirectory;
+  }
+
+  set outputDirectory(outputPath) {
+    this._outputDirectory = outputPath;
+    this.registerOutputPath(this.outputDirectory);
+  }
+
+  doFullTaskRun() {
+    // Implement your full task run action here
+  }
+
+  doIncrementalTaskRun(changedFiles) {
+    // Implement your incremental task run action here
+  }
+}
+
+let task = new MySmartTask({
+  name: 'incrementalTask',
+  incrementalDirectory: '/incremental/mytask'
+});
+task.addInputDirectory('/input/path');
+task.outputDirectory = '/output/path';
+task.run();
+</code></pre>
+<p>When creating a new incremental task instance, the constructor requires a <code>incrementalDirectory</code> to be passed via the options object. This directory will hold all the state data that is used to determine changed files and any other data your task might require to perform its incremental action.</p>
+<p>The <code>incrementalOutputs</code> getter is used to define the output files and directories that will be checked to see if a anything changed and trigger a full run. This has to be an Array of paths you are free to set as you seem fit for your task. By default it is an empty array.</p>
+<p>Instead of overriding <code>runTaskAction</code> like in the previous examples, incremental tasks need to override <code>doFullTaskRun</code> and <code>doIncrementalTaskRun</code> to define the its logic. <code>runTaskAction</code> already handles the detection of file changes and triggers either a full or incremental task run. The rules for this are:</p>
+<ul>
+<li>No incremental data: full task run</li>
+<li>Output files changed: full task run</li>
+<li>Input files changed: incremental task run</li>
+<li>Nothing changed: skip task run</li>
+</ul>
+<p>The <code>changedFiles</code> in <code>doIncrementalTaskRun</code> will be a <code>Map</code> with the full path to the file as the key, and either the string <code>created</code>, <code>changed</code> or <code>deleted</code> as the value.</p>
+<h2 id="what-s-next-">What's next?</h2>
+<ul class="docma task-list">
+<li class="docma task-item"><input type="checkbox" disabled=""> &nbsp;Ability to organize tasks into some sort of Project and define dependencies between those tasks. The project then manages the execution of all tasks, taking care of execution order as well as passing input and output data from and to the individual tasks.</li>
+<li class="docma task-item"><input type="checkbox" disabled=""> &nbsp;Make use of ES7 decorators to mark properties as inputs and outputs</li>
+</ul>
+</body></html>
