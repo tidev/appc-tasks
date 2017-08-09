@@ -11,7 +11,7 @@
 
 This module provides base implementations that can be used to create your own tasks. A task in this context represents some atomic piece of work. It is used within the Titanium SDK and Hyperloop build pipelines but is designed to be usable in any other project as well.
 
-A full API documentation can be found at [http://appcelerator.github.io/appc-tasks/?api]()
+A full API documentation can be found at http://appcelerator.github.io/appc-tasks/?api
 
 ## Getting started
 

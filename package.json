@@ -1,6 +1,6 @@
 {
   "name": "appc-tasks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Base implementations for any kind of task in NodeJS",
   "author": "Axway Appcelerator <npmjs@appcelerator.com> (https://appcelerator.com)",
   "contributors": [
@@ -18,8 +18,7 @@
     "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test nyc mocha",
     "coveralls": "cross-env NODE_ENVE=test nyc report --reporter=text-lcov | coveralls",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run lint && npm run test"
+    "prepublish": "npm run build"
   },
   "keywords": [
     "task",

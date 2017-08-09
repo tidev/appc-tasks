@@ -28,7 +28,7 @@
 				"items": [{
 					"label": "<code>npm i appc-tasks -S</code>",
 					"href": "https://npmjs.com/appc-tasks",
-					"target": "_blank",
+					"target": "_blank"
 				}]
 			}, {
 				"label": "GitHub",
