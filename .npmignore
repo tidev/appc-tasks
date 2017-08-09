@@ -10,6 +10,7 @@ test
 # CI tools
 appveyor.yml
 .travis.yml
+Jenkinsfile
 
 # Logs
 logs
@@ -21,3 +22,4 @@ yarn-error.log*
 # Other config files (Linters, Babel etc)
 .babelrc
 .eslintrc.yml
+docma.config.json
