@@ -17,7 +17,7 @@
     "docs": "docma -c docma.config.json",
     "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test nyc mocha",
-    "coveralls": "cross-env NODE_ENVE=test nyc report --reporter=text-lcov | coveralls",
+    "coveralls": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls",
     "prepublish": "npm run build"
   },
   "keywords": [
