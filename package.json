@@ -18,7 +18,7 @@
     "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test nyc mocha",
     "coveralls": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "task",
