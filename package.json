@@ -16,7 +16,7 @@
     "build": "babel lib --out-dir dist",
     "docs": "docma -c docma.config.json",
     "lint": "eslint lib test",
-    "test": "cross-env NODE_ENV=test nyc mocha",
+    "test": "cross-env NODE_ENV=test JUNIT_REPORT_PATH=junit_report.xml nyc mocha --reporter mocha-jenkins-reporter",
     "coveralls": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls",
     "prepublishOnly": "npm run build"
   },
@@ -44,6 +44,7 @@
     "eslint-plugin-mocha": "^5.0.0",
     "jsdoc-babel": "^0.4.0",
     "mocha": "^5.2.0",
+    "mocha-jenkins-reporter": "^0.3.12",
     "mock-fs": "^4.4.1",
     "nyc": "^12.0.2",
     "sinon": "^6.0.0",
@@ -55,7 +56,8 @@
     ],
     "reporter": [
       "lcov",
-      "text"
+      "text",
+      "cobertura"
     ],
     "sourceMap": false,
     "instrument": false

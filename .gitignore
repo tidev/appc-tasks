@@ -11,6 +11,7 @@ node_modules/
 # Coverage directory and nyc output
 coverage
 .nyc_output
+junit_report.xml
 
 # Distribution directory
 dist

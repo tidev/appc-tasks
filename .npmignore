@@ -3,9 +3,10 @@ lib
 
 # Docs, test and coverage directories
 .nyc_output
-coverage
+coverage/
 docs
-test
+test/
+junit_report.xml
 
 # CI tools
 appveyor.yml
