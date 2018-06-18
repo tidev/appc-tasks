@@ -3,7 +3,7 @@
 [![Travis Build Status](https://travis-ci.org/appcelerator/appc-tasks.svg?branch=master)](https://travis-ci.org/appcelerator/appc-tasks)
 [![Appveyor Build status](https://ci.appveyor.com/api/projects/status/edxjipwjl9qxtfc9?svg=true)](https://ci.appveyor.com/project/appcelerator/appc-tasks)
 [![Coverage Status](https://coveralls.io/repos/github/appcelerator/appc-tasks/badge.svg?branch=master)](https://coveralls.io/github/appcelerator/appc-tasks?branch=master)
-[![Dependencies](https://david-dm.org/appcelerator/appc-tasks.svg)](https://david-dm.org/appcelerator/appc-tasks)
+[![Dependencies](https://david-dm.org/appcelerator/appc-tasks.svg)](https://david-dm.org/appcelerator/appc-tasks) [![Greenkeeper badge](https://badges.greenkeeper.io/appcelerator/appc-tasks.svg)](https://greenkeeper.io/)
 
 > Base implementations for any kind of task in NodeJS
 
