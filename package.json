@@ -40,7 +40,7 @@
     "chai-as-promised": "^7.1.1",
     "cross-env": "^5.0.1",
     "docma": "^2.1.0",
-    "eslint": "^4.3.0",
+    "eslint": "^5.0.0",
     "eslint-plugin-mocha": "^5.0.0",
     "jsdoc-babel": "^0.4.0",
     "mocha": "^5.2.0",
