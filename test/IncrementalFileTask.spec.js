@@ -27,7 +27,7 @@ class TestTask extends IncrementalFileTask {
 	}
 }
 let task = null;
-let sandbox = sinon.sandbox.create();
+let sandbox = sinon.createSandbox();
 
 describe('IncrementalFileTask', () => {
 	beforeEach(() => {
@@ -50,7 +50,6 @@ describe('IncrementalFileTask', () => {
 			}
 		});
 		task = new TestTask();
-		sinon.sandbox.create();
 	});
 
 	afterEach(() => {
