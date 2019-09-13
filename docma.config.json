@@ -14,28 +14,32 @@
 	},
 	"template": {
 		"options": {
-			"navItems": [{
-				"label": "Home",
-				"href": "/appc-tasks",
-				"iconClass": "ico-md ico-bookmark"
-			}, {
-				"label": "API",
-				"href": "?api",
-				"iconClass": "ico-md ico-code"
-			}, {
-				"label": "Download",
-				"iconClass": "ico-md ico-download",
-				"items": [{
-					"label": "<code>npm i appc-tasks -S</code>",
-					"href": "https://npmjs.com/appc-tasks",
-					"target": "_blank"
-				}]
-			}, {
-				"label": "GitHub",
-				"href": "https://github.com/appcelerator/appc-tasks",
-				"target": "_blank",
-				"iconClass": "ico-md ico-github"
-			}]
+			"navbar": {
+				"menu": [
+					{
+						"label": "Home",
+						"href": "/appc-tasks",
+						"iconClass": "ico-md ico-bookmark"
+					}, {
+						"label": "API",
+						"href": "?api",
+						"iconClass": "ico-md ico-code"
+					}, {
+						"label": "Download",
+						"iconClass": "ico-md ico-download",
+						"items": [{
+							"label": "<code>npm i appc-tasks -S</code>",
+							"href": "https://npmjs.com/appc-tasks",
+							"target": "_blank"
+						}]
+					}, {
+						"label": "GitHub",
+						"href": "https://github.com/appcelerator/appc-tasks",
+						"target": "_blank",
+						"iconClass": "ico-md ico-github"
+					}
+				]
+			}
 		}
 	}
 }
