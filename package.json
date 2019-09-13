@@ -31,28 +31,28 @@
     "fs-extra": "^7.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
-    "babel-plugin-istanbul": "^4.1.4",
-    "babel-preset-env": "^1.6.0",
-    "babel-register": "^6.24.1",
-    "chai": "^4.1.0",
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/register": "^7.6.0",
+    "babel-plugin-istanbul": "^5.2.0",
+    "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "cross-env": "^5.0.1",
-    "docma": "^3.0.0",
-    "eslint": "^5.0.1",
-    "eslint-plugin-mocha": "^5.0.0",
+    "cross-env": "^5.2.1",
+    "docma": "^3.2.2",
+    "eslint": "^6.3.0",
+    "eslint-plugin-mocha": "^6.1.1",
     "jsdoc-babel": "^0.5.0",
-    "mocha": "^5.2.0",
-    "mocha-jenkins-reporter": "^0.4.0",
-    "mock-fs": "^4.4.1",
-    "nyc": "^12.0.2",
-    "sinon": "^6.0.0",
+    "mocha": "^6.2.0",
+    "mocha-jenkins-reporter": "^0.4.2",
+    "mock-fs": "^4.10.1",
+    "nyc": "^14.1.1",
+    "sinon": "^7.4.2",
     "std-mocks": "^1.0.1"
   },
   "nyc": {
     "require": [
-      "babel-register"
+      "@babel/register"
     ],
     "reporter": [
       "lcov",
