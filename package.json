@@ -47,7 +47,7 @@
     "mocha-jenkins-reporter": "^0.4.2",
     "mock-fs": "^4.10.1",
     "nyc": "^14.1.1",
-    "sinon": "^7.4.2",
+    "sinon": "^8.0.0",
     "std-mocks": "^1.0.1"
   },
   "nyc": {
