@@ -2,7 +2,6 @@ import { IncrementalFileTask } from '../lib';
 import { ChangeManager } from '../lib/incremental';
 import { default as chai, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { FileMonitor } from 'file-state-monitor';
 import fs from 'fs';
 import mockFs from 'mock-fs';
 import path from 'path';
