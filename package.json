@@ -16,7 +16,7 @@
     "build": "babel lib --out-dir dist",
     "docs": "docma -c docma.config.json",
     "lint": "eslint lib test",
-    "test": "npm run lint && cross-env NODE_ENV=test JUNIT_REPORT_PATH=junit_report.xml nyc mocha --reporter mocha-jenkins-reporter",
+    "test": "cross-env NODE_ENV=test JUNIT_REPORT_PATH=junit_report.xml nyc mocha --reporter mocha-jenkins-reporter",
     "coveralls": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls",
     "prepublishOnly": "npm run build"
   },
