@@ -63,5 +63,10 @@
     ],
     "sourceMap": false,
     "instrument": false
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
