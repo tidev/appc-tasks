@@ -15,3 +15,5 @@ junit_report.xml
 
 # Distribution directory
 dist
+
+.DS_Store
