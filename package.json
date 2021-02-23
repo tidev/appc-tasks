@@ -18,7 +18,7 @@
     "lint": "eslint lib test",
     "test": "cross-env NODE_ENV=test JUNIT_REPORT_PATH=junit_report.xml nyc mocha --reporter mocha-jenkins-reporter",
     "coveralls": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls",
-    "prepublishOnly": "pinst --disable",
+    "prepublishOnly": "pinst --disable && npm run build",
     "postinstall": "husky install",
     "postpublish": "pinst --enable"
   },
