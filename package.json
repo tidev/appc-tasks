@@ -1,6 +1,6 @@
 {
   "name": "appc-tasks",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Base implementations for any kind of task in NodeJS",
   "author": "Axway Appcelerator <npmjs@appcelerator.com> (https://appcelerator.com)",
   "contributors": [
@@ -29,7 +29,7 @@
     "project"
   ],
   "dependencies": {
-    "file-state-monitor": "^1.0.0",
+    "file-state-monitor": "^2.0.0",
     "fs-extra": "^9.1.0"
   },
   "devDependencies": {
