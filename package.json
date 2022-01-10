@@ -37,7 +37,7 @@
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/register": "^7.6.0",
-    "@commitlint/cli": "^13.1.0",
+    "@commitlint/cli": "^16.0.2",
     "@commitlint/config-conventional": "^13.1.0",
     "babel-plugin-istanbul": "^6.0.0",
     "chai": "^4.2.0",
